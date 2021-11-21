@@ -49,6 +49,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -248,6 +249,13 @@ fun TodoEditButton(
         Text(text)
     }
 }
+
+
+@Preview
+@Composable
+fun PreviewEditButton() = TodoEditButton(onClick = { /*TODO*/ },
+    text = "Add")
+
 
 @Preview
 @Composable

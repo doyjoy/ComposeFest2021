@@ -124,6 +124,39 @@ fun TodoScreen(
 }
 
 /**
+ * Stateful composable to allow entry of *new* [TodoItem].
+ *
+ * This composable will display a button with [buttonText].
+ *
+ * @param onItemComplete (event) notify the caller that the user has completed entry of an item
+ * @param buttonText text to display on the button
+ */
+@Composable
+fun TodoItemEntryInput(onItemComplete: (TodoItem) -> Unit, buttonText: String = "Add") {
+    val (text, onTextChange) = rememberSaveable { mutableStateOf("") }
+    val (icon, onIconChange) = remember { mutableStateOf(TodoIcon.Default) }
+
+    val submit = {
+        if (text.isNotBlank()) {
+            onItemComplete(TodoItem(text, icon))
+            onTextChange("")
+            onIconChange(TodoIcon.Default)
+        }
+    }
+
+    TodoItemInput(
+        text = text,
+        onTextChange = onTextChange,
+        icon = icon,
+        onIconChange = onIconChange,
+        submit = submit,
+        iconsVisible = text.isNotBlank()
+    ) {
+        TodoEditButton(onClick = submit, text = buttonText, enabled = text.isNotBlank())
+    }
+}
+
+/**
  * Stateless composable that provides a styled [TodoItemInput] for inline editing.
  *
  * This composable will display a floppy disk and ❌ for the buttons.
@@ -167,39 +200,6 @@ fun TodoItemInlineEditor(
             }
         }
     )
-}
-
-/**
- * Stateful composable to allow entry of *new* [TodoItem].
- *
- * This composable will display a button with [buttonText].
- *
- * @param onItemComplete (event) notify the caller that the user has completed entry of an item
- * @param buttonText text to display on the button
- */
-@Composable
-fun TodoItemEntryInput(onItemComplete: (TodoItem) -> Unit, buttonText: String = "Add") {
-    val (text, onTextChange) = rememberSaveable { mutableStateOf("") }
-    val (icon, onIconChange) = remember { mutableStateOf(TodoIcon.Default) }
-
-    val submit = {
-        if (text.isNotBlank()) {
-            onItemComplete(TodoItem(text, icon))
-            onTextChange("")
-            onIconChange(TodoIcon.Default)
-        }
-    }
-
-    TodoItemInput(
-        text = text,
-        onTextChange = onTextChange,
-        icon = icon,
-        onIconChange = onIconChange,
-        submit = submit,
-        iconsVisible = text.isNotBlank()
-    ) {
-        TodoEditButton(onClick = submit, text = buttonText, enabled = text.isNotBlank())
-    }
 }
 
 /**
