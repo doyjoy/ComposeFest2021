@@ -27,19 +27,12 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,13 +47,15 @@ import androidx.compose.ui.unit.dp
 import com.codelab.theming.R
 import com.codelab.theming.data.Post
 import com.codelab.theming.data.PostRepo
+import com.codelab.theming.ui.start.theme.JoyTheme
 import java.util.Locale
+
 
 @Composable
 fun Home() {
     val featured = remember { PostRepo.getFeaturedPost() }
     val posts = remember { PostRepo.getPosts() }
-    MaterialTheme {
+    JoyTheme {
         Scaffold(
             topBar = { AppBar() }
         ) { innerPadding ->
@@ -99,7 +94,7 @@ private fun AppBar() {
         title = {
             Text(text = stringResource(R.string.app_title))
         },
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = MaterialTheme.colors.primarySurface
     )
 }
 
@@ -108,14 +103,21 @@ fun Header(
     text: String,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = text,
+    Surface(
+        color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
+        contentColor = MaterialTheme.colors.primary,
         modifier = modifier
-            .fillMaxWidth()
-            .background(Color.LightGray)
-            .semantics { heading() }
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    )
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.subtitle2,
+            modifier = modifier
+                .fillMaxWidth()
+                .semantics { heading() }
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+    }
+
 }
 
 @Composable
@@ -166,6 +168,7 @@ private fun PostMetadata(
         append(divider)
         append(stringResource(R.string.read_time, post.metadata.readTimeMinutes))
         append(divider)
+        //TODO Tag Style
         post.tags.forEachIndexed { index, tag ->
             if (index != 0) {
                 append(tagDivider)
@@ -173,10 +176,13 @@ private fun PostMetadata(
             append(" ${tag.uppercase(Locale.getDefault())} ")
         }
     }
-    Text(
-        text = text,
-        modifier = modifier
-    )
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.body2,
+            modifier = modifier
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -203,6 +209,19 @@ fun PostItem(
         }
     )
 }
+@Preview("Featured Post • Dark")
+@Composable
+private fun FeaturedPostDarkPreview() {
+    val post = remember { PostRepo.getFeaturedPost() }
+    JoyTheme(darkTheme = true) {
+        FeaturedPost(post = post)
+    }
+}
+@Preview("Home")
+@Composable
+private fun HomePreview() {
+    Home()
+}
 
 @Preview("Post Item")
 @Composable
@@ -213,15 +232,13 @@ private fun PostItemPreview() {
     }
 }
 
+
+
 @Preview("Featured Post")
 @Composable
 private fun FeaturedPostPreview() {
     val post = remember { PostRepo.getFeaturedPost() }
-    FeaturedPost(post = post)
-}
-
-@Preview("Home")
-@Composable
-private fun HomePreview() {
-    Home()
+    JoyTheme {
+        FeaturedPost(post = post)
+    }
 }
