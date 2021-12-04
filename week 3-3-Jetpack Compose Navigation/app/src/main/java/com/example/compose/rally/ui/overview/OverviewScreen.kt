@@ -61,8 +61,8 @@ import java.util.Locale
 @Composable
 fun OverviewBody(
     onClickSeeAllAccounts: () -> Unit = {},
-    onClickSeeAllBills: () -> Unit = {},
-    onAccountClick: (String) -> Unit = {},
+    onClickSeeAllBills: () -> Unit = {}
+    ,onAccountClick: (String) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
